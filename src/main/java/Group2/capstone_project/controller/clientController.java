@@ -46,9 +46,10 @@ public class clientController {
            Optional<Client> result = clientserivce.login(client);
         if(result!=null) {
             Session.setAttribute("loginId",result.get().getId());
-            return "redirect:/";
+            return "redirect:/capstone ver1/event.html";
         }else{
-            return "redirect:/";
+            return "redirect:/capstone ver1/login.html";
+            
         }
     }
 
