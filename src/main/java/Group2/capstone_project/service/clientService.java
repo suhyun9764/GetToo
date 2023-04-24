@@ -70,6 +70,10 @@ public class clientService {
         }
 
     }
+
+    public Client findById(String id){
+        return clientRepository.findById(id).get();
+    }
     public void updateInfo(Client client){
         clientRepository.updateInfo(client);
     }

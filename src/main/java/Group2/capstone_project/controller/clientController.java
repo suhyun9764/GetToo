@@ -3,14 +3,20 @@ package Group2.capstone_project.controller;
 import Group2.capstone_project.domain.Client;
 import Group2.capstone_project.dto.client.ClientDto;
 import Group2.capstone_project.service.clientService;
+import Group2.capstone_project.session.SessionConst;
+import Group2.capstone_project.session.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +24,10 @@ import java.util.Optional;
 @Controller
 public class clientController {
 
+
     private final PasswordEncoder passwordEncoder;
     private final clientService clientserivce;
+    private final SessionManager sessionManager = new SessionManager();
 
     @Autowired
     public clientController(clientService clientService,PasswordEncoder passwordEncoder){
@@ -27,10 +35,27 @@ public class clientController {
         this.passwordEncoder =passwordEncoder;
     }
 
-    @GetMapping("/")
-    public String index(){
+    //@GetMapping("/")
+    public String home(){
         return "/index.html";
     }
+
+    @GetMapping("/")
+    public String loginHome(HttpServletRequest request, Model model){
+       HttpSession session = request.getSession(false);
+
+        if(session == null){
+            return "/index.html";
+        }
+        Client client = (Client) session.getAttribute(SessionConst.LOGIN_CLIENT);
+        if(client==null)
+            return "/index.html";
+
+        System.out.println(client.getName());
+        return "/capstone ver1/login_index.html";
+    }
+
+
 
     @GetMapping("/client/home")
     public String main()
@@ -38,21 +63,57 @@ public class clientController {
         return "/client/clienthome";
     }
 
-    @PostMapping("/client/login")
-    public String login(@ModelAttribute ClientDto clientDto, HttpSession Session){
+   // @PostMapping("/client/login")
+    public String login(@ModelAttribute ClientDto clientDto, HttpSession Session, HttpServletResponse response){
         Client client = new Client();
         client.setId(clientDto.getId());
         client.setPwd(clientDto.getPassword());
            Optional<Client> result = clientserivce.login(client);
         if(result!=null) {
+            Cookie idCookie = new Cookie("clientId", client.getId());
+            response.addCookie(idCookie);
             Session.setAttribute("loginId",result.get().getId());
-            return "redirect:/capstone ver1/event.html";
+            return "redirect:/";
         }else{
             return "redirect:/capstone ver1/login.html";
             
         }
     }
 
+    // @PostMapping("/clientlogin")
+    public String loginV2(@ModelAttribute ClientDto clientDto, HttpServletRequest request, HttpServletResponse response){
+        Client client = (Client)sessionManager.getSession(request);
+        if(client !=null)
+            return "redirect:/";
+        Client client2 = new Client();
+        client2.setId(clientDto.getId());
+        client2.setPwd(clientDto.getPassword());
+        Optional<Client> result = clientserivce.login(client2);
+        if(result!=null) {
+            sessionManager.createSession(client2, response);
+            return "redirect:/";
+        }else{
+            return "redirect:/capstone ver1/login.html";
+
+        }
+    }
+
+    @PostMapping("/clientlogin")
+    public String loginV3(@ModelAttribute ClientDto clientDto, HttpServletRequest request){
+
+        Client client = new Client();
+        client.setId(clientDto.getId());
+        client.setPwd(clientDto.getPassword());
+        Optional<Client> result = clientserivce.login(client);
+        if(result!=null) {
+            HttpSession session = request.getSession();
+            session.setAttribute(SessionConst.LOGIN_CLIENT, result.get() );
+            return "redirect:/";
+        }else{
+            return "redirect:/capstone ver1/login.html";
+
+        }
+    }
     @GetMapping("/client/register")
     public String register(){
         return "/client/register";
@@ -124,12 +185,38 @@ public class clientController {
         return "/client/updateresult";
     }
 
-    @GetMapping("/client/logout")
+    //@GetMapping("/client/logout")
 
-    public String logOut(HttpSession httpSession){
+    public String logOut(HttpSession httpSession, HttpServletResponse response){
+        Cookie cookie = new Cookie("clientId", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
         httpSession.invalidate();
-        return "client/clienthome";
+        return "redirect:/";
     }
+
+   // @PostMapping ("/clientlogout")
+    public String logOut(HttpServletRequest request, HttpServletResponse response){
+        sessionManager.expire(request);
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+        }
+        return "redirect:/capstone ver1/login.html";
+    }
+
+     @PostMapping ("/clientlogout")
+    public String logOut(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if(session!=null) {
+            session.invalidate();
+        }
+        return "redirect:/capstone ver1/login.html";
+    }
+
 
 
     @GetMapping("/board/home")
