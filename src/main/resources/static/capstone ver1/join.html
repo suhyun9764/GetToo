@@ -40,29 +40,29 @@
         <h1> 회원가입 </h1>
         <form action="/client/join" method="POST">
             <div class="int-area">
-                <input type="text" name="loginId" id="id" autocomplete="off" required  maxlength="20">
+                <input type="text" name="id" id="id" autocomplete="off" required  maxlength="20">
                 <label for="id"> 아이디 </label>
                 <button id="idbtn">중복 확인</button>
             </div>
             <div class="int-area">
-                <input type="password" name="pw" id="pw" autocomplete="off" required minlength="7" maxlength="20">
-                <label for="pw"> 비밀번호 (7자 이상)</label>
+                <input type="password" name="password" id="password" autocomplete="off" required minlength="7" maxlength="20">
+                <label for="password"> 비밀번호 (7자 이상)</label>
             </div>
                 <div class="int-area">
                 <input type="password" name="pwCheck" id="pwcheck" autocomplete="off" required  minlength="7" maxlength="20">
                 <label for="pwcheck"> 비밀번호 확인 (7자 이상)</label>
             </div>
             <div class="int-area">
-                <input type="text" class="datepicker" name="birthday" readonly="readonly" id="birthday" autocomplete="off" required style="cursor: pointer;">
-                <label for="birthday"> 생년월일 </label>
+                <input type="text" class="datepicker" name="age" readonly="readonly" id="age" autocomplete="off" required style="cursor: pointer;">
+                <label for="age"> 생년월일 </label>
             </div>
             <div class="int-area">
                 <input type="email" name="email" id="email" autocomplete="off" required>
                 <label for="email"> 이메일 </label>
             </div>
             <div class="int-area">
-                <input name="cellphoneNo" type="text" id="cellphoneNo" maxlength="13" minlength="13" autocomplete="off" required>
-                <label for="cellphoneNo"> 휴대폰 번호 ('-'포함 13자) </label>
+                <input name="studentNumber" type="text" id="studentNumber" maxlength="8" minlength="8" autocomplete="off" required>
+                <label for="studentNumber"> 휴대폰 번호 ('-'포함 13자) </label>
             </div>
             <div class="int-radio">
                 <div class="school"> 재학여부 </div>

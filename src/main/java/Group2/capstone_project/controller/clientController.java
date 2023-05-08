@@ -131,9 +131,12 @@ public class clientController {
         client.setId(ClientDto.getId());
         client.setName(ClientDto.getName());
         client.setAge(ClientDto.getAge());
+        client.setEmail(ClientDto.getEmail());
         client.setStudentNumber(ClientDto.getStudentNumber());
         client.setPwd(passwordEncoder.encode(ClientDto.getPassword()));
+        client.setSchool(ClientDto.getSchool());
         clientserivce.join(client);
+
         return "redirect:/capstone ver1/login.html";
     }
 

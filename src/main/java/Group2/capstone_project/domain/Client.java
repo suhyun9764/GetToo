@@ -7,6 +7,9 @@ public class  Client {
     private String studentNumber;
     private String pwd;
 
+    private String school;
+
+    private String email;
     public String getId() {
         return id;
     }
@@ -45,5 +48,21 @@ public class  Client {
 
     public void setPwd(String pwd) {
         this.pwd = pwd;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
     }
 }

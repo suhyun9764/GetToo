@@ -17,8 +17,9 @@ public class MysqlClientRepository implements ClientRepository{
     }
     @Override
     public void save(Client client) {
-        String sql = "INSERT INTO client(id,name,age,studentNumber,pwd) values(?,?,?,?,?)";
-        jdbcTemplate.update(sql,client.getId(),client.getName(),client.getAge(),client.getStudentNumber(),client.getPwd());
+        String sql = "INSERT INTO client(id,name,age,studentNumber,email,school, pwd) values(?,?,?,?,?,?,?)";
+        jdbcTemplate.update(sql,client.getId(),client.getName(),client.getAge(),client.getStudentNumber(),
+                client.getEmail(),client.getSchool(),client.getPwd());
     }
 
     @Override
